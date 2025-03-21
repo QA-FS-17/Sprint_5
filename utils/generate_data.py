@@ -1,11 +1,9 @@
-# Создадим генераторы для email и пароля:
-
 import random
 
+# Вспомогательная функция для генерации email
 def generate_email():
-    # Генерация email в формате имя_фамилия_номер_когорты_3цифры@домен
-    return f"user_{random.randint(100, 999)}@example.com"
+    return f"user_{random.randint(100, 999)}@yandex.ru"
 
+# Вспомогательная функция для генерации пароля
 def generate_password():
-    # Генерация пароля из 6 символов
     return f"pass{random.randint(100, 999)}"

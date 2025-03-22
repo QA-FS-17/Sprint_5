@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from utils.generate_data import generate_email, generate_password
 
 # Фикстура для инициализации драйвера
@@ -57,3 +58,31 @@ def login_user(driver, register_user):
 
     # Возвращаем email и пароль для использования в тестах
     return {"email": email, "password": password}
+
+# Фикстура для выхода пользователя
+@pytest.fixture
+def logout_user(driver):
+    # Открываем главную страницу
+    driver.get("https://stellarburgers.nomoreparties.site")
+
+    # Нажимаем кнопку "Личный кабинет"
+    personal_account_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//p[contains(@class, 'AppHeader_header__linkText__3q_va') and contains(text(), 'Личный Кабинет')]"))
+    )
+    personal_account_button.click()
+
+    # Ожидаем появления кнопки "Выход"
+    try:
+        logout_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'Account_button__14Yp3') and contains(text(), 'Выход')]"))
+        )
+        logout_button.click()
+    except TimeoutException:
+        # Если кнопка "Выход" не найдена, делаем скриншот для отладки
+        driver.save_screenshot("logout_error.png")
+        raise
+
+    # Ожидаем перенаправления на главную страницу
+    WebDriverWait(driver, 10).until(
+        EC.url_to_be("https://stellarburgers.nomoreparties.site/")
+    )

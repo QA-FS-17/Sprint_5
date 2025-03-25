@@ -58,6 +58,7 @@ def login_user(driver, register_user):
     # Возвращаем email и пароль для использования в тестах
     return {"email": email, "password": password}
 
+# Фикстура для выхода пользователя
 @pytest.fixture
 def logout_user(driver):
     # Открываем главную страницу

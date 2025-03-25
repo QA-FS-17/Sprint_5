@@ -1,0 +1,4 @@
+selenium==4.30.0
+pytest==8.3.5
+requests==2.32.3
+webdriver-manager==4.0.2 # Для автоматической загрузки драйверов

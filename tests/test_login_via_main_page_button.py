@@ -25,7 +25,7 @@ def test_login_via_main_page_button(driver, register_user):
     submit_button.click()
 
     # Ожидаем перенаправления на главную страницу
-    WebDriverWait(driver, 5).until(
+    WebDriverWait(driver, 10).until(
         EC.url_to_be("https://stellarburgers.nomoreparties.site/")
     )
 

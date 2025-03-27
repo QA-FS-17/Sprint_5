@@ -1,30 +1,27 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-def test_successful_registration(driver, register_user):
-    # Ожидаем перенаправления на страницу логина
-    WebDriverWait(driver, 10).until(
-        EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
-    )
-    # Проверяем, что регистрация прошла успешно
-    assert driver.current_url == "https://stellarburgers.nomoreparties.site/login", "Регистрация не удалась"
-
-
-from selenium.webdriver.common.by import By
+from locators import RegistrationPageLocators
 from utils.generate_data import generate_email
 
-def test_invalid_password_registration(driver):
-    # Открываем страницу регистрации
-    driver.get("https://stellarburgers.nomoreparties.site/register")
 
-    # Заполняем форму регистрации с некорректным паролем
-    driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Иван Иванов")
-    driver.find_element(By.XPATH, "//label[text()='Email']/following-sibling::input").send_keys(generate_email())
-    driver.find_element(By.XPATH, "//label[text()='Пароль']/following-sibling::input").send_keys("123")
+class TestRegistration:
+    """Тест регистрации пользователя"""
 
-    # Нажимаем кнопку "Зарегистрироваться"
-    driver.find_element(By.XPATH, "//button[text()='Зарегистрироваться']").click()
+    def test_successful_registration(self, driver, register_user):
+        WebDriverWait(driver, 10).until(
+            EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
+        )
+        assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
 
-    # Проверяем, что отображается ошибка
-    error_message = driver.find_element(By.XPATH, "//p[contains(text(), 'Некорректный пароль')]")
-    assert error_message.is_displayed(), "Ошибка для некорректного пароля не отображается"
+    def test_invalid_password_registration(self, driver):
+        driver.get("https://stellarburgers.nomoreparties.site/register")
+
+        driver.find_element(*RegistrationPageLocators.NAME_INPUT).send_keys("Иван Иванов")
+        driver.find_element(*RegistrationPageLocators.EMAIL_INPUT).send_keys(generate_email())
+        driver.find_element(*RegistrationPageLocators.PASSWORD_INPUT).send_keys("123")
+        driver.find_element(*RegistrationPageLocators.REGISTER_BUTTON).click()
+
+        error = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.ERROR_MESSAGE)
+        )
+        assert error.is_displayed()

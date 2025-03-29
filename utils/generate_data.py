@@ -1,9 +1,9 @@
 import random
 
-# Вспомогательная функция для генерации email
 def generate_email():
-    return f"user_{random.randint(100, 999)}@yandex.ru"
+    """Генерация уникального email"""
+    return f"user_{random.randint(100, 999)}@example.com"
 
-# Вспомогательная функция для генерации пароля
 def generate_password():
-    return f"pass{random.randint(100, 999)}"
+    """Генерация пароля (6+ символов)"""
+    return f"pass{random.randint(1000, 9999)}"

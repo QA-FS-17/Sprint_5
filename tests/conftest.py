@@ -5,83 +5,71 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.generate_data import generate_email, generate_password
 
-# Фикстура для инициализации драйвера
+
 @pytest.fixture
 def driver():
-    # Настройка драйвера для Chrome
+    """Фикстура инициализации драйвера"""
     driver = webdriver.Chrome()
     driver.maximize_window()
     yield driver
     driver.quit()
 
-# Фикстура для регистрации пользователя
+
 @pytest.fixture
 def register_user(driver):
-    # Открываем страницу регистрации
+    """Фикстура регистрации нового пользователя"""
     driver.get("https://stellarburgers.nomoreparties.site/register")
 
-    # Заполняем форму регистрации
+    # Заполнение формы регистрации
     driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Иван Иванов")
     email = generate_email()
     driver.find_element(By.XPATH, "//label[text()='Email']/following-sibling::input").send_keys(email)
     password = generate_password()
     driver.find_element(By.XPATH, "//label[text()='Пароль']/following-sibling::input").send_keys(password)
-
-    # Нажимаем кнопку "Зарегистрироваться"
     driver.find_element(By.XPATH, "//button[text()='Зарегистрироваться']").click()
 
-    # Возвращаем email и пароль для использования в тестах
+    # Ожидание успешной регистрации
+    WebDriverWait(driver, 10).until(
+        EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
+    )
+
     return {"email": email, "password": password}
 
-# Фикстура для входа пользователя
+
 @pytest.fixture
 def login_user(driver, register_user):
-    # Получаем email и пароль из фикстуры register_user
-    email = register_user["email"]
-    password = register_user["password"]
-
-    # Открываем страницу входа
+    """Фикстура авторизации пользователя"""
+    # Используем данные из register_user
     driver.get("https://stellarburgers.nomoreparties.site/login")
-
-    # Заполняем форму входа
-    driver.find_element(By.XPATH, "//label[text()='Email']/following-sibling::input").send_keys(email)
-    driver.find_element(By.XPATH, "//label[text()='Пароль']/following-sibling::input").send_keys(password)
-
-    # Нажимаем кнопку "Войти"
+    driver.find_element(By.XPATH, "//input[@name='name']").send_keys(register_user["email"])
+    driver.find_element(By.XPATH, "//input[@name='Пароль']").send_keys(register_user["password"])
     driver.find_element(By.XPATH, "//button[text()='Войти']").click()
 
-    # Ожидаем перенаправления на главную страницу
+    # Ожидание успешного входа
     WebDriverWait(driver, 10).until(
-        EC.url_to_be("https://stellarburgers.nomoreparties.site/")
+        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Оформить заказ')]"))
     )
 
-    # Возвращаем email и пароль для использования в тестах
-    return {"email": email, "password": password}
+    return register_user  # Возвращаем те же данные
 
-# Фикстура для выхода пользователя
+
 @pytest.fixture
-def logout_user(driver):
-    # Открываем главную страницу
+def logout_user(driver, login_user):
+    """Фикстура выхода из системы"""
     driver.get("https://stellarburgers.nomoreparties.site")
+    driver.find_element(By.XPATH, "//p[contains(text(), 'Личный Кабинет')]").click()
 
-    # Ожидаем и кликаем кнопку "Личный кабинет"
-    personal_account_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//p[contains(text(), 'Личный Кабинет')]"))
-    )
-    personal_account_button.click()
-
-    # Проверяем, что мы на странице профиля (вместо try/except)
+    # Ожидание загрузки ЛК
     WebDriverWait(driver, 10).until(
         EC.url_contains("/account/profile")
     )
 
-    # Ожидаем и кликаем кнопку "Выход"
-    logout_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Выход')]"))
-    )
-    logout_button.click()
+    # Выход
+    driver.find_element(By.XPATH, "//button[contains(text(), 'Выход')]").click()
 
-    # Ожидаем возврата на главную страницу
+    # Ожидание выхода
     WebDriverWait(driver, 10).until(
-        EC.url_to_be("https://stellarburgers.nomoreparties.site/")
+        EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
     )
+
+    return login_user  # Возвращаем данные пользователя

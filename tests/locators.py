@@ -15,6 +15,7 @@ class RegistrationPageLocators:
     PASSWORD_INPUT = ("xpath", "//label[text()='Пароль']/following-sibling::input")  # Обновлено
     REGISTER_BUTTON = ("css selector", "button.button_button__33qZ0")
     LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")
+    PASSWORD_ERROR = ("xpath", "//p[contains(@class, 'input__error')]")
 
 class ForgotPasswordPageLocators:
     LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")

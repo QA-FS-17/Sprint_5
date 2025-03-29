@@ -1,27 +1,51 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from locators import RegistrationPageLocators
-from utils.generate_data import generate_email
 
 
-class TestRegistration:
-    """Тест регистрации пользователя"""
+BASE_URL = "https://stellarburgers.nomoreparties.site"
+DEFAULT_WAIT_TIME = 10
+
+class TestSuccessfulRegistration:
+    """Тесты успешной регистрации"""
 
     def test_successful_registration(self, driver, register_user):
+        """Проверка успешной регистрации"""
+        register_user()  # Фикстура уже содержит все шаги регистрации
+
+        # Проверяем переход на страницу логина
         WebDriverWait(driver, 10).until(
-            EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
+            EC.url_to_be(f"{BASE_URL}/login")
         )
-        assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
+        assert driver.current_url == f"{BASE_URL}/login"
 
-    def test_invalid_password_registration(self, driver):
-        driver.get("https://stellarburgers.nomoreparties.site/register")
 
-        driver.find_element(*RegistrationPageLocators.NAME_INPUT).send_keys("Иван Иванов")
-        driver.find_element(*RegistrationPageLocators.EMAIL_INPUT).send_keys(generate_email())
-        driver.find_element(*RegistrationPageLocators.PASSWORD_INPUT).send_keys("123")
-        driver.find_element(*RegistrationPageLocators.REGISTER_BUTTON).click()
+class TestRegistrationErrors:
+    """Тесты ошибок при регистрации"""
+
+    def test_weak_password_error(self, driver, weak_password_user):
+        """Проверка ошибки 'Некорректный пароль'"""
+        driver.get(f"{BASE_URL}/register")
+
+        # Заполняем форму со слабым паролем
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.NAME_INPUT)
+        ).send_keys(weak_password_user["name"])
+
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.EMAIL_INPUT)
+        ).send_keys(weak_password_user["email"])
+
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.PASSWORD_INPUT)
+        ).send_keys(weak_password_user["password"])
+
+        # Проверяем сообщение об ошибке
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(RegistrationPageLocators.REGISTER_BUTTON)
+        ).click()
 
         error = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(RegistrationPageLocators.ERROR_MESSAGE)
+            EC.visibility_of_element_located(RegistrationPageLocators.PASSWORD_ERROR)
         )
-        assert error.is_displayed()
+        assert error.text == "Некорректный пароль"

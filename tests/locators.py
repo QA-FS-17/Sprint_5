@@ -21,13 +21,22 @@ class PersonalAccountLocators:
     LOGOUT_BUTTON = ("css selector", "button.Account_button__14Yp3")
     PROFILE_LINK = ("css selector", "a[href='/account/profile']")
 
-class ConstructorPageLocators:
-    BUNS_TAB = ("xpath", "//span[text()='Булки']/parent::div")
-    SAUCES_TAB = ("xpath", "//span[text()='Соусы']/parent::div")
-    FILLINGS_TAB = ("xpath", "//span[text()='Начинки']/parent::div")
-    ACTIVE_TAB = ("xpath", "//div[contains(@class, 'tab_tab_type_current')]/span")
-
 class ForgotPasswordPageLocators:
     LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")
     EMAIL_INPUT = ("css selector", "input[name='name']")
     RESET_BUTTON = ("css selector", "button.button_button__33qZ0")
+
+
+class ConstructorPageLocators:
+    # Основные локаторы текста табов
+    BUNS_TEXT = ("xpath", "//span[@class='text text_type_main-default' and text()='Булки']")
+    SAUCES_TEXT = ("xpath", "//span[@class='text text_type_main-default' and text()='Соусы']")
+    FILLINGS_TEXT = ("xpath", "//span[@class='text text_type_main-default' and text()='Начинки']")
+
+    # Локаторы родительских элементов табов для клика
+    BUNS_TAB = ("xpath", "//div[contains(@class, 'tab_tab__1SPyG')]//span[text()='Булки']/..")
+    SAUCES_TAB = ("xpath", "//div[contains(@class, 'tab_tab__1SPyG')]//span[text()='Соусы']/..")
+    FILLINGS_TAB = ("xpath", "//div[contains(@class, 'tab_tab__1SPyG')]//span[text()='Начинки']/..")
+
+    # Локатор активного таба
+    ACTIVE_TAB = ("xpath", "//div[contains(@class, 'tab_tab_type_current__2BEPc')]")

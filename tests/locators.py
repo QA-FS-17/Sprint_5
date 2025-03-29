@@ -1,25 +1,33 @@
+class RegistrationPageLocators:
+    NAME_INPUT = ("xpath", "//label[text()='Имя']/following-sibling::input")
+    EMAIL_INPUT = ("xpath", "//label[text()='Email']/following-sibling::input")
+    PASSWORD_INPUT = ("xpath", "//label[text()='Пароль']/following-sibling::input")
+    REGISTER_BUTTON = ("css selector", "button.button_button__33qZ0")
+    LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")
+    PASSWORD_ERROR = ("xpath", "//p[contains(@class, 'input__error')]")
+
 class MainPageLocators:
     LOGIN_BUTTON = ("css selector", "button.button_button__33qZ0")
     PERSONAL_ACCOUNT_BUTTON = ("css selector", "a[href='/account']")
+    CONSTRUCTOR_BUTTON = ("css selector", "p.AppHeader_header__linkText__3q_va")
+    LOGO_BUTTON = ("css selector", "div.AppHeader_header__logo__2D0X2")
 
 class LoginPageLocators:
     EMAIL_INPUT = ("css selector", "input.text.input__textfield[type='text']")
     PASSWORD_INPUT = ("css selector", "input.text.input__textfield[type='password'][name='Пароль']")
     LOGIN_BUTTON = ("css selector", "button.button_button__33qZ0.button_button_type_primary__1O7Bx.button_button_size_medium__3zxIa")
-    REGISTER_LINK = ("css selector", "a.Auth_link__1fOlj[href='/register']")
-    FORGOT_PASSWORD_LINK = ("css selector", "a.Auth_link__1fOlj[href='/forgot-password']")
 
-class RegistrationPageLocators:
-    NAME_INPUT = ("xpath", "//label[text()='Имя']/following-sibling::input")  # Добавлено
-    EMAIL_INPUT = ("xpath", "//label[text()='Email']/following-sibling::input")  # Обновлено
-    PASSWORD_INPUT = ("xpath", "//label[text()='Пароль']/following-sibling::input")  # Обновлено
-    REGISTER_BUTTON = ("css selector", "button.button_button__33qZ0")
-    LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")
-    PASSWORD_ERROR = ("xpath", "//p[contains(@class, 'input__error')]")
+class PersonalAccountLocators:
+    LOGOUT_BUTTON = ("css selector", "button.Account_button__14Yp3")
+    PROFILE_LINK = ("css selector", "a[href='/account/profile']")
+
+class ConstructorPageLocators:
+    BUNS_TAB = ("xpath", "//span[text()='Булки']/parent::div")
+    SAUCES_TAB = ("xpath", "//span[text()='Соусы']/parent::div")
+    FILLINGS_TAB = ("xpath", "//span[text()='Начинки']/parent::div")
+    ACTIVE_TAB = ("xpath", "//div[contains(@class, 'tab_tab_type_current')]/span")
 
 class ForgotPasswordPageLocators:
     LOGIN_LINK = ("css selector", "a.Auth_link__1fOlj[href='/login']")
-
-class PersonalAccountLocators:
-    LOGOUT_BUTTON = ("css selector", "button.button_button__33qZ0")
-    PROFILE_LINK = ("css selector", "a[href='/account/profile']")
+    EMAIL_INPUT = ("css selector", "input[name='name']")
+    RESET_BUTTON = ("css selector", "button.button_button__33qZ0")

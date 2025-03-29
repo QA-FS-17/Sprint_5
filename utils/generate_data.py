@@ -1,10 +1,10 @@
 import random
 import string
 
-# Генерация тестовых данных
 def generate_email():
-    return f"user_{random.randint(1000, 9999)}@example.com"
+    username = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+    return f"{username}@example.com"
 
-def generate_password():
-    chars = string.ascii_letters + string.digits + "!@#$%"
-    return ''.join(random.choice(chars) for _ in range(10))
+def generate_password(length=6):
+    chars = string.ascii_letters + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))
